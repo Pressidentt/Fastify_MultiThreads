@@ -1,18 +1,28 @@
-// CommonJs
+const fibonacciResolver = require('./routes/fibonacci_route')
+const getInfo = require('./routes/thirdapi')
+const { init } = require('./threads/threads')
+
+
+
 const fastify = require('fastify')({
   logger: true
 })
 
-// Declare a route
 fastify.get('/', function (request, reply) {
   reply.send({ hello: 'world' })
 })
 
-// Run the server!
+fastify.post('/test', fibonacciResolver);
+fastify.get('/thirdapi', getInfo);
+
+(async () => {
+  await init({ maxWorkers: 2 })
+})()
+
 fastify.listen({ port: 3000 }, function (err, address) {
+
   if (err) {
     fastify.log.error(err)
     process.exit(1)
   }
-  // Server is now listening on ${address}
 })
